@@ -7,6 +7,7 @@ import { getBase64, validate } from 'utils/helper';
 import { toast } from 'react-toastify';
 import { apiUpdateProd } from 'apis';
 import { showModal } from 'store/app/appSlice';
+import Swal from 'sweetalert2';
 
 
 const UpdateProduct = ({ updateProd, render, setUpdateProd }) => {
@@ -85,10 +86,16 @@ const UpdateProduct = ({ updateProd, render, setUpdateProd }) => {
 
             dispatch(showModal({ isShowModal: false, modalChildren: null }))
             if (res.success) {
-                render()
-                setUpdateProd(null)
-                toast.success(res?.mes)
-            } else toast.error(res?.mes)
+                Swal.fire('Congratulation !!!', res.mes, 'success').then(() => {
+                    render()
+                    setUpdateProd(null)
+                })
+            } else Swal.fire({
+                title: 'Some thing went wrong !!!',
+                text: res.mes,
+                icon: 'error',
+                showCancelButton: true
+            })
         }
     }
     return (

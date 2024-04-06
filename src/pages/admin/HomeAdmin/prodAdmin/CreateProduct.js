@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import icons from 'utils/icons';
 import { apiCreateProd } from 'apis';
 import { showModal } from 'store/app/appSlice';
+import Swal from 'sweetalert2';
 
 const { IoTrashBinOutline } = icons
 
@@ -73,11 +74,12 @@ const CreateProduct = () => {
             const res = await apiCreateProd(formData)
             dispatch(showModal({ isShowModal: false, modalChildren: null }))
             if (res.success) {
-                toast.success(res.mes)
-                reset()
-                setPayload({
-                    thumb: '',
-                    image: []
+                Swal.fire('Congratulation !!!', res.mes, 'success').then(() => {
+                    reset()
+                    setPayload({
+                        thumb: '',
+                        image: []
+                    })
                 })
             } else toast.error(res.mes)
         }
