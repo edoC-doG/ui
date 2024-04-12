@@ -1,33 +1,25 @@
-import { Button, InputForm, Loading, MarkDownEditor, Select } from 'components'
-import React, { useCallback, useEffect, useState } from 'react'
+import { apiAddVarriant } from 'apis'
+import clsx from 'clsx'
+import { Button, InputForm, Loading } from 'components'
+import React, { memo, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useSelector, useDispatch } from 'react-redux';
-import { getBase64, validate } from 'utils/helper';
-import { toast } from 'react-toastify';
-import icons from 'utils/icons';
-import { apiCreateProd } from 'apis';
-import { showModal } from 'store/app/appSlice';
-import Swal from 'sweetalert2';
+import { useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
+import { showModal } from 'store/app/appSlice'
+import Swal from 'sweetalert2'
+import { getBase64 } from 'utils/helper'
+import icons from 'utils/icons'
 
 const { IoTrashBinOutline } = icons
 
-const CreateProduct = () => {
-    const { categories } = useSelector(state => state.app)
+const CustomsizeProd = ({ customizeVariants, render, setCustomizeVariants }) => {
     const dispatch = useDispatch()
     const { register, formState: { errors }, reset, handleSubmit, watch } = useForm()
-    const [payload, setPayload] = useState({
-        description: ''
-    })
+    const [hoverElm, setHoverElm] = useState(null)
     const [preview, setPreview] = useState({
         thumb: null,
         images: []
     })
-    const [hoverElm, setHoverElm] = useState(null)
-    const [invalidFields, setInvalidFields] = useState([])
-    const changeValue = useCallback((e) => {
-        setPayload(e)
-    }, [payload])
-
     const handleBase64 = async (file) => {
         const toBase64 = await getBase64(file)
         setPreview(prev => ({ ...prev, thumb: toBase64 }))
@@ -51,27 +43,17 @@ const CreateProduct = () => {
         }
         setPreview(prev => ({ ...prev, images: imagesPreview }))
     }
-    useEffect(() => {
-        handleBase64(watch('thumb')[0])
-    }, [watch('thumb')])
-    useEffect(() => {
-        handlePreviewImages(watch('images'))
-    }, [watch('images')])
-
-    const handleCreateProd = async (data) => {
-        const invalids = validate(payload, setInvalidFields)
-        if (invalids === 0) {
-            if (data.category) data.category = categories?.find(el => el._id === data.category)?.title
-            const finalPayload = { ...data, ...payload }
-
+    const handleCreateVar = async (data) => {
+        if (data.color === customizeVariants.color) Swal.fire('Some thing went wrong !!!', "Color not changed", 'info')
+        else {
             const formData = new FormData()
-            for (let i of Object.entries(finalPayload)) formData.append(i[0], i[1])
-            if (finalPayload.thumb) formData.append('thumb', finalPayload.thumb[0])
-            if (finalPayload.images) {
-                for (let image of finalPayload.images) formData.append('images', image)
+            for (let i of Object.entries(data)) formData.append(i[0], i[1])
+            if (data.thumb) formData.append('thumb', data.thumb[0])
+            if (data.images) {
+                for (let image of data.images) formData.append('images', image)
             }
             dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
-            const res = await apiCreateProd(formData)
+            const res = await apiAddVarriant(formData, customizeVariants._id)
             dispatch(showModal({ isShowModal: false, modalChildren: null }))
             if (res.success) {
                 Swal.fire('Congratulation !!!', res.mes, 'success').then(() => {
@@ -81,27 +63,49 @@ const CreateProduct = () => {
                         image: []
                     })
                 })
-            } else toast.error(res.mes)
+            } else Swal.fire('Some thing went wrong !!!', res.mes, 'error')
         }
     }
+    useEffect(() => {
+        handleBase64(watch('thumb')[0])
+    }, [watch('thumb')])
+    useEffect(() => {
+        handlePreviewImages(watch('images'))
+    }, [watch('images')])
+    useEffect(() => {
+        reset({
+            title: customizeVariants?.title,
+            color: customizeVariants?.color,
+            price: customizeVariants?.price,
+        });
+    }, [customizeVariants])
     return (
-        <div className='w-full'>
-            <h1 className='h-[75px] flex justify-between items-center text-3xl font-bold px-4 border-b'>
-                <span>Create Product</span>
-            </h1>
+        <div className={clsx('w-full flex flex-col gap-4 p-4 relative')}>
+            <div className='h-[69px] w-full'></div>
+            <div className='p-4 border-b bg-gray-100 flex justify-between items-center fixed top-0 right-0 left-[327px]'>
+                <h2 className='text-3xl font-bold tracking-tight'>Variants products</h2>
+                <Button
+                    handleOnClick={() => setCustomizeVariants(null)}
+                >
+                    Cancel
+                </Button>
+            </div>
             <div className='p-4'>
-                <form onSubmit={handleSubmit(handleCreateProd)}>
-                    <InputForm
-                        label='Name Product'
-                        register={register}
-                        errors={errors}
-                        id="title"
-                        validate={{
-                            required: 'Need fill this field'
-                        }}
-                        fullWidth
-                        placeholder='Name of new product'
-                    />
+                <form onSubmit={handleSubmit(handleCreateVar)}>
+                    <div className='w-full flex gap-4 my-6'>
+                        <InputForm
+                            label='Original Name'
+                            register={register}
+                            errors={errors}
+                            id="title"
+                            style={`flex-1`}
+                            fullWidth
+                            validate={{
+                                required: 'Need fill this field'
+                            }}
+                            placeholder='Title of new product'
+                        />
+                    </div>
                     <div className='w-full flex gap-4 my-6'>
                         <InputForm
                             label='Price'
@@ -112,20 +116,9 @@ const CreateProduct = () => {
                                 required: 'Need fill this field'
                             }}
                             fullWidth={true}
-                            style={`flex-1`}
+                            style={`flex-auto`}
                             placeholder='Price of new product'
-                        />
-                        <InputForm
-                            label='Quantity'
-                            register={register}
-                            errors={errors}
-                            id="quantity"
-                            validate={{
-                                required: 'Need fill this field'
-                            }}
-                            fullWidth={true}
-                            style={`flex-1`}
-                            placeholder='Quantity of new product'
+                            type='number'
                         />
                         <InputForm
                             label='Color'
@@ -136,45 +129,10 @@ const CreateProduct = () => {
                                 required: 'Need fill this field'
                             }}
                             fullWidth={true}
-                            style={`flex-1`}
+                            style={`flex-auto`}
                             placeholder='Color of new product'
                         />
                     </div>
-                    <div className='w-full flex gap-4 my-6'>
-                        <Select
-                            fullWidth={true}
-                            register={register}
-                            label='Category'
-                            options={categories?.map(el => ({ code: el?._id, value: el?.title }))}
-                            id='category'
-                            errors={errors}
-                            validate={{
-                                required: 'Need fill this field'
-                            }}
-                            style={`flex-auto`}
-                        />
-                        <Select
-                            fullWidth={true}
-                            errors={errors}
-                            register={register}
-                            label='Brand'
-                            options={categories?.find(el => el._id === watch('category'))?.brand?.map(el => ({
-                                code: el, value: el
-                            }))}
-                            id='brand'
-                            validate={{
-                                required: 'Need fill this field'
-                            }}
-                            style={`flex-auto`}
-                        />
-                    </div>
-                    <MarkDownEditor
-                        name='description'
-                        changeValue={changeValue}
-                        label='Description'
-                        invalidFields={invalidFields}
-                        setInvalidFields={setInvalidFields}
-                    />
                     <div className='flex flex-col'>
                         <div
                             onClick={e => e.stopPropagation()}
@@ -222,11 +180,11 @@ const CreateProduct = () => {
                             ))}
                         </div>}
                     </div>
-                    <Button type='submit'>Create New Product</Button>
+                    <Button type='submit'>Create Variants Product</Button>
                 </form>
             </div>
         </div>
     )
 }
 
-export default CreateProduct
+export default memo(CustomsizeProd)

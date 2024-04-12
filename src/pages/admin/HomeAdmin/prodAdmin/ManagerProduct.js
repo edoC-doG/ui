@@ -1,6 +1,6 @@
 import { apiDeleteProd, apiGetProducts } from 'apis'
 import clsx from 'clsx'
-import { Button, InputForm, Pagination } from 'components'
+import { Button, InputForm, Pagination, C } from 'components'
 import useDebounce from 'hooks/useDebounce'
 import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -10,8 +10,11 @@ import { formatMoney, formatPrice } from 'utils/helper'
 import UpdateProduct from './UpdateProduct'
 import Swal from 'sweetalert2'
 import { toast } from 'react-toastify'
+import icons from 'utils/icons'
+import CustomsizeProd from './CustomsizeProd'
 
 
+const { BiCustomize, BiEdit, RiDeleteBin6Line } = icons
 
 const ManagerProduct = () => {
     const [product, setProduct] = useState(null)
@@ -22,6 +25,7 @@ const ManagerProduct = () => {
     const { register, formState: { errors }, watch } = useForm()
     const [counts, setCounts] = useState(0)
     const [update, setUpdate] = useState(false)
+    const [customizeVariants, setCustomizeVariants] = useState(null)
 
     const render = useCallback(() => {
         setUpdate(!update)
@@ -75,6 +79,13 @@ const ManagerProduct = () => {
                     setUpdateProd={setUpdateProd}
                 />
             </div>}
+            {customizeVariants && <div className='absolute inset-0 min-h-screen bg-gray-100 z-50'>
+                <CustomsizeProd
+                    customizeVariants={customizeVariants}
+                    render={render}
+                    setCustomizeVariants={setCustomizeVariants}
+                />
+            </div>}
             <div className='h-[69px] w-full'></div>
             <div className='p-4 border-b w-full bg-gray-100 flex justify-between items-center fixed top-0'>
                 <h2 className='text-3xl font-bold tracking-tight'>Manage products</h2>
@@ -123,19 +134,26 @@ const ManagerProduct = () => {
                             <td className='text-center py-2'>{el?.color}</td>
                             <td className='text-center py-2'>{el?.totalRatings}</td>
                             <td className='text-center py-2'>{moment(el?.createdAt).format('DD/MM/YYYY')}</td>
-                            <td className='py-2 px-4'>
+                            <td className='text-center py-2'>
                                 <div className=' flex justify-center items-center gap-2'>
-                                    <Button
-                                        handleOnClick={() => setUpdateProd(el)}
-                                        style={`px-4 py-2 my-2 rounded-md text-white bg-blue-700 font-semibold hover:bg-blue-300`}
+                                    <span
+                                        className='px-1 inline-block text-blue-700 font-semibold hover:text-blue-300 cursor-pointer'
+                                        onClick={() => setUpdateProd(el)}
                                     >
-                                        Edit
-                                    </Button>
-                                    <Button
-                                        handleOnClick={() => handleDelete(el._id)}
+                                        <BiEdit size={20} />
+                                    </span>
+                                    <span
+                                        onClick={() => setCustomizeVariants(el)}
+                                        className='px-1 inline-block text-green-700 font-semibold hover:text-green-300 cursor-pointer'
                                     >
-                                        Delete
-                                    </Button>
+                                        <BiCustomize size={20} />
+                                    </span>
+                                    <span
+                                        className='px-1 inline-block text-main font-semibold hover:text-red-300 cursor-pointer'
+                                        onClick={() => handleDelete(el._id)}
+                                    >
+                                        <RiDeleteBin6Line size={20} />
+                                    </span>
                                 </div>
                             </td>
                         </tr>

@@ -5,5 +5,6 @@ export {
     ManagerProduct,
     UpdateProduct,
     ManagerUser,
-    CreateProduct
+    CreateProduct,
+    CustomsizeProd
 } from './HomeAdmin'

@@ -1,4 +1,4 @@
-import { RiPhoneFill, RiTruckFill } from 'react-icons/ri'
+import { RiPhoneFill, RiTruckFill, RiDeleteBin6Line } from 'react-icons/ri'
 import { MdMail, MdGroups } from 'react-icons/md'
 import {
     BsHandbagFill,
@@ -9,7 +9,7 @@ import {
 import { FaUserCircle, FaTty } from 'react-icons/fa'
 import { IoMenu, IoTrashBinOutline } from 'react-icons/io5'
 import { IoIosArrowForward } from 'react-icons/io'
-import { BiDotsHorizontalRounded } from 'react-icons/bi'
+import { BiDotsHorizontalRounded, BiEdit, BiCustomize } from 'react-icons/bi'
 import { HiHome } from 'react-icons/hi2'
 import { LiaSitemapSolid } from "react-icons/lia";
 import {
@@ -46,7 +46,10 @@ const icons = {
     LiaSitemapSolid,
     AiOutlineCaretDown,
     AiOutlineCaretUp,
+    BiEdit, BiCustomize,
+    RiDeleteBin6Line,
     IoTrashBinOutline,
+
 }
 
 export default icons
