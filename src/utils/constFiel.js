@@ -219,6 +219,37 @@ export const sideBarAdmin = [
 
 ]
 
+export const sideBarMemBer = [
+    {
+        id: 1,
+        type: 'SINGLE',
+        text: 'Personal',
+        path: `/${path.MEMBER}/${path.PERSONAL}`,
+        icons: <HiHome />
+    },
+    {
+        id: 2,
+        type: 'SINGLE',
+        text: 'Manage Cart',
+        path: `/${path.MEMBER}/${path.MY_CART}`,
+        icons: <MdGroups />
+    },
+    {
+        id: 3,
+        type: 'SINGLE',
+        text: 'History',
+        path: `/${path.MEMBER}/${path.HISTORY}`,
+        icons: <LiaSitemapSolid />
+    },
+    {
+        id: 4,
+        type: 'SINGLE',
+        text: 'Wish List',
+        path: `/${path.MEMBER}/${path.WISH_LIST}`,
+        icons: <LiaSitemapSolid />
+    },
+]
+
 export const roleList = [
     {
         code: 2000,

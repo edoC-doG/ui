@@ -160,7 +160,7 @@ const CustomsizeProd = ({ customizeVariants, render, setCustomizeVariants }) => 
                             />
                             {errors['images'] && <small className='text-xs text-red-500'>{errors['images']?.message}</small>}
                         </div>
-                        {preview.images.length > 0 && <div className='flex flex-wrap w-full gap-3 my-4 '>
+                        {preview?.images?.length > 0 && <div className='flex flex-wrap w-full gap-3 my-4 '>
                             {preview.images?.map((el, idx) => (
                                 <div
                                     key={idx}

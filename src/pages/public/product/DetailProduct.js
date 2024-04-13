@@ -8,6 +8,7 @@ import { formatMoney, formatPrice, renderStarFromNumber } from 'utils/helper'
 import { toast } from 'react-toastify';
 import { prodExtraInf } from 'utils/constFiel'
 import DOMPurify from 'dompurify'
+import clsx from 'clsx'
 const settings = {
     dots: false,
     isFinite: true,
@@ -17,19 +18,41 @@ const settings = {
 }
 
 const DetailProduct = () => {
-    const { pid, title, category } = useParams()
+    const { pid, category } = useParams()
     const [product, setProduct] = useState(null)
     const [quantity, setQuantity] = useState(1)
     const [update, setUpdate] = useState(false)
+    const [variantsItem, setVariants] = useState(null)
     const [currentImg, setCurrentImg] = useState('https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png')
     const [relatedProd, setRelatedProd] = useState(null)
+    const [currentProd, setCurrentProd] = useState({
+        title: '',
+        thumb: '',
+        images: [],
+        price: '',
+        color: ''
+    })
     const fetchProductData = async () => {
         const res = await apiGetProduct(pid)
         if (res.success) {
             setProduct(res.productData)
-            setCurrentImg(res?.productData?.thumb)
+            setCurrentImg(res.productData?.thumb)
         }
     }
+    useEffect(() => {
+        if (variantsItem) {
+            setCurrentProd(
+                {
+                    title: product?.variants?.find(el => el.sku === variantsItem)?.title,
+                    thumb: product?.variants?.find(el => el.sku === variantsItem)?.thumb,
+                    price: product?.variants?.find(el => el.sku === variantsItem)?.price,
+                    images: product?.variants?.find(el => el.sku === variantsItem)?.images,
+                    color: product?.variants?.find(el => el.sku === variantsItem)?.color,
+                }
+            )
+            setCurrentImg(product?.variants?.find(el => el.sku === variantsItem)?.thumb)
+        }
+    }, [variantsItem])
     const fetchProducts = async () => {
         const res = await apiGetProducts({ category })
         if (res.success) {
@@ -70,12 +93,13 @@ const DetailProduct = () => {
     useEffect(() => {
         if (pid) fetchProductData()
     }, [update])
+    console.log(currentProd?.images)
     return (
         <div className='w-full'>
             <div className='h-[81px] flex items-center justify-center bg-gray-100'>
                 <div className='w-main'>
-                    <h3 className='font-semibold'>{title}</h3>
-                    <BreadCrumbs title={title} category={category} />
+                    <h3 className='font-semibold'>{variantsItem !== null ? currentProd?.title : product?.title}</h3>
+                    <BreadCrumbs title={variantsItem !== null ? currentProd?.title : product?.title} category={category} />
                 </div>
             </div>
             <div className='w-main m-auto mt-4 flex'>
@@ -85,10 +109,10 @@ const DetailProduct = () => {
                             smallImage: {
                                 alt: '',
                                 isFluidWidth: true,
-                                src: currentImg
+                                src: variantsItem !== null ? currentProd?.thumb : currentImg
                             },
                             largeImage: {
-                                src: currentImg,
+                                src: variantsItem !== null ? currentProd?.thumb : currentImg,
                                 width: 1800,
                                 height: 1500
                             }
@@ -98,7 +122,17 @@ const DetailProduct = () => {
                         <Slider
                             className='image-slider flex justify-between' {...settings}
                         >
-                            {product?.images?.map(el => (
+                            {currentProd.images.length < 3 && product?.images?.map(el => (
+                                <div className='flex-1' key={el}>
+                                    <img
+                                        src={el}
+                                        alt='sub-product'
+                                        onClick={(e) => handleSwapImg(e, el)}
+                                        className='h-[143px] border object-cover cursor-pointer'
+                                    />
+                                </div>
+                            ))}
+                            {currentProd.images.length > 3 && currentProd.images?.map(el => (
                                 <div className='flex-1' key={el}>
                                     <img
                                         src={el}
@@ -113,7 +147,7 @@ const DetailProduct = () => {
                 </div>
                 <div className='w-2/5 pr-6 flex flex-col gap-4'>
                     <div className='flex items-center justify-between'>
-                        <h2 className='text-[30px] font-semibold'>{`${formatMoney(formatPrice(product?.price))} VND`}</h2>
+                        <h2 className='text-[30px] font-semibold'>{`${formatMoney(formatPrice(variantsItem !== null ? currentProd?.price : product?.price))} VND`}</h2>
                         <span className='text-sm text-main'>{`In stock: ${product?.quantity}`}</span>
                     </div>
                     <div className='flex items-center gap-1'>
@@ -130,6 +164,37 @@ const DetailProduct = () => {
                                 dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product?.description[0]) }}>
                             </div>}
                     </ul>
+                    <div className='my-4 flex gap-4'>
+                        <span className='font-bold'>Color:</span>
+                        <div className='flex flex-wrap gap-4 items-center w-full'>
+                            <div
+                                onClick={() => setVariants(null)}
+                                className={clsx(`flex items-center gap-2 p-2 border cursor-pointer`,
+                                    !variantsItem && 'border-red-500')}
+                            >
+                                <img src={product?.thumb} alt="thumb" className='w-8 h-8 rounded-md object-cover' />
+                                <span className='flex flex-col'>
+                                    <span>{product?.color}</span>
+                                    <span className='text-sm'>{product?.price}</span>
+                                </span>
+                            </div>
+                            {product?.variants?.map((el, idx) => (
+                                <div
+                                    key={idx}
+                                    onClick={() => setVariants(el.sku)}
+                                    className={clsx(`flex items-center gap-2 p-2 border cursor-pointer`, variantsItem === el?.sku && 'border-red-500',
+                                        // el?.quantity !== 0 && 'hidden'
+                                    )}
+                                >
+                                    <img src={el?.thumb} alt="thumb" className='w-8 h-8 rounded-md object-cover' />
+                                    <span className='flex flex-col'>
+                                        <span>{el?.color}</span>
+                                        <span className='text-sm'>{el?.price}</span>
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                     <div className='flex flex-col gap-8'>
                         <div className='flex items-center gap-4'>
                             <span className='font-semibold'>Quantity</span>

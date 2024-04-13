@@ -114,6 +114,7 @@ const ManagerProduct = () => {
                         <th className='text-center py-2'>Sold</th>
                         <th className='text-center py-2'>Color</th>
                         <th className='text-center py-2'>Ratings</th>
+                        <th className='text-center py-2'>Variants</th>
                         <th className='text-center py-2'>Updated At</th>
                         <th className='text-center py-2'>Action</th>
                     </tr>
@@ -133,6 +134,7 @@ const ManagerProduct = () => {
                             <td className='text-center py-2'>{el?.sold}</td>
                             <td className='text-center py-2'>{el?.color}</td>
                             <td className='text-center py-2'>{el?.totalRatings}</td>
+                            <td className='text-center py-2'>{el?.variants?.length}</td>
                             <td className='text-center py-2'>{moment(el?.createdAt).format('DD/MM/YYYY')}</td>
                             <td className='text-center py-2'>
                                 <div className=' flex justify-center items-center gap-2'>

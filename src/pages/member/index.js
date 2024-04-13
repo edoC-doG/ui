@@ -1,2 +1,5 @@
 export { default as LayoutMember } from './LayoutMember'
 export { default as Member } from './Member'
+export { default as Mycart } from './Mycart'
+export { default as WishList } from './WishList'
+export { default as History } from './History'

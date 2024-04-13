@@ -7,7 +7,7 @@ export {
     Header,
     Sidebar,
     TopHeader,
-    AdminSidebar
+    AdminSidebar, MemberSidebar
 } from './home'
 export {
     Comment,

@@ -21,7 +21,7 @@ import {
   ManagerProduct,
   ManagerUser
 } from './pages/admin'
-import { LayoutMember, Member } from './pages/member'
+import { History, LayoutMember, Member, Mycart, WishList } from './pages/member'
 import { getCategories } from './store/app/asyncAction';
 import { useDispatch, useSelector } from 'react-redux'
 import { Modal } from './components'
@@ -55,6 +55,9 @@ function App() {
         </Route>
         <Route path={path.MEMBER} element={<LayoutMember />}>
           <Route path={path.PERSONAL} element={<Member />} />
+          <Route path={path.HISTORY} element={<History />} />
+          <Route path={path.MY_CART} element={<Mycart />} />
+          <Route path={path.WISH_LIST} element={<WishList />} />
         </Route>
         <Route path={path.LOGIN} element={<Login />} />
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
