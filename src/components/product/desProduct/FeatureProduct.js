@@ -10,8 +10,7 @@ const FeatureProduct = () => {
     const fetchProducts = async () => {
         const res = await apiGetProducts({
             limit: 9,
-            // page: Math.round(Math.random() * 10),
-            // totalRatings: 5
+            sort: '-totalRatings'
         })
         if (res.success) setProducts(res.products)
     }
@@ -34,28 +33,26 @@ const FeatureProduct = () => {
                     />
                 ))}
             </div>
-            <div className='flex justify-between'>
+            <div className='grid grid-cols-4 grid-rows-2 gap-4'>
                 <img
                     src={banner1}
                     alt=""
-                    className='w-[49.4%] object-contain'
+                    className='w-full h-full object-cover col-span-2 row-span-2'
                 />
-                <div className='flex flex-col justify-between gap-2 w-[23.85%] '>
-                    <img
-                        src="https://digital-world-2.myshopify.com/cdn/shop/files/banner2-bottom-home2_400x.jpg?v=1613166661"
-                        alt=""
-                        className=' object-contain'
-                    />
-                    <img
-                        src="https://digital-world-2.myshopify.com/cdn/shop/files/banner3-bottom-home2_400x.jpg?v=1613166661"
-                        alt=""
-                        className=' object-contain'
-                    />
-                </div>
+                <img
+                    src="https://digital-world-2.myshopify.com/cdn/shop/files/banner2-bottom-home2_400x.jpg?v=1613166661"
+                    alt=""
+                    className='w-full h-full object-cover col-span-1 row-span-1'
+                />
                 <img
                     src={banner4}
                     alt=""
-                    className=' w-[23.85%] object-contain'
+                    className='w-full h-full object-cover col-span-1 row-span-2'
+                />
+                <img
+                    src="https://digital-world-2.myshopify.com/cdn/shop/files/banner3-bottom-home2_400x.jpg?v=1613166661"
+                    alt=""
+                    className='w-full h-full object-cover col-span-1 row-span-1'
                 />
             </div>
         </div>

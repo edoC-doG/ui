@@ -93,7 +93,6 @@ const DetailProduct = () => {
     useEffect(() => {
         if (pid) fetchProductData()
     }, [update])
-    console.log(currentProd?.images)
     return (
         <div className='w-full'>
             <div className='h-[81px] flex items-center justify-center bg-gray-100'>
