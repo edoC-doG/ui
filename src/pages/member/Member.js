@@ -1,13 +1,18 @@
-import { Button, InputForm } from 'components'
+import { Button, InputForm, Loading } from 'components'
 import moment from 'moment'
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import avatar from 'assets/userDefault.png';
+import { apiUpdateCurrent } from 'apis'
+import { getCurrentUser } from 'store/user/asyncAction'
+import Swal from 'sweetalert2'
+import { showModal } from 'store/app/appSlice'
 
 const Member = () => {
     const { register, formState: { errors, isDirty }, reset, handleSubmit, watch } = useForm()
     const { current } = useSelector(state => state.user)
+    const dispatch = useDispatch()
     useEffect(() => {
         reset({
             firstName: current?.firstName,
@@ -17,8 +22,18 @@ const Member = () => {
             avatar: current?.avatar,
         })
     }, [])
-    const handleUpdateInf = (data) => {
-        console.log(data)
+    const handleUpdateInf = async (data) => {
+        const formData = new FormData()
+        if (data.avatar.length > 0) formData.append('avatar', data.avatar[0])
+        delete data.avatar
+        for (let i of Object.entries(data)) formData.append(i[0], i[1])
+        dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
+        const res = await apiUpdateCurrent(formData)
+        dispatch(showModal({ isShowModal: false, modalChildren: null }))
+        if (res.success) {
+            dispatch(getCurrentUser())
+            Swal.fire('Congratulation !!!', res.mes, 'success')
+        } else Swal.fire('Some thing went wrong !!!', res.mes, 'error')
     }
     return (
         <div className='w-full flex flex-col gap-4 p-4 relative'>
