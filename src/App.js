@@ -24,17 +24,25 @@ import {
 import { History, LayoutMember, Member, Mycart, WishList } from './pages/member'
 import { getCategories } from './store/app/asyncAction';
 import { useDispatch, useSelector } from 'react-redux'
-import { Modal } from './components'
+import { Cart, Modal } from './components'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { showCart } from 'store/app/appSlice';
 function App() {
   const dispatch = useDispatch();
-  const { isShowModal, modalChildren } = useSelector(state => state.app)
+  const { isShowModal, modalChildren, isShowCart } = useSelector(state => state.app)
   useEffect(() => {
     dispatch(getCategories())
   }, [])
   return (
-    <div className="font-main h-screen">
+    <div className="font-main h-screen relative">
+      {isShowCart &&
+        <div
+          onClick={() => dispatch(showCart())}
+          className='absolute inset-0 bg-overlay z-50 flex justify-end'
+        >
+          <Cart />
+        </div>}
       {isShowModal && <Modal>{modalChildren}</Modal>}
       <Routes>
         <Route path={path.PUBLIC} element={<PublicPage />}>

@@ -17,7 +17,6 @@ import path from 'utils/path'
 const { AiFillEye, BsCartPlusFill, BsFillSuitHeartFill, BsFillCartCheckFill } = icons
 
 const ProductItem = ({ productData, isNew, normal, navigate, dispatch }) => {
-    console.log(productData)
     const [isShowOption, setIsShowOption] = useState(false)
     const { current } = useSelector(state => state.user)
     const checkLogin = () => {
@@ -46,7 +45,6 @@ const ProductItem = ({ productData, isNew, normal, navigate, dispatch }) => {
         if (flag === 'Cart') {
             await checkLogin()
             const res = await apiUpdateCart({ pid: productData._id, color: productData.color })
-            console.log({ pid: productData._id, color: productData.color })
             if (res.success) {
                 toast.success(res.mes)
                 dispatch(getCurrentUser())

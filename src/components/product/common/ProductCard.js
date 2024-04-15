@@ -1,5 +1,5 @@
 import React from 'react'
-import { formatMoney, formatPrice, renderStarFromNumber, secondsToHms } from 'utils/helper'
+import { formatMoney, formatPrice, renderStarFromNumber, } from 'utils/helper'
 
 const ProductCard = ({ price, totalRatings, title, image }) => {
     return (

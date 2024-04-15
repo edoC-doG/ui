@@ -21,7 +21,8 @@ export {
     SelectOption,
     SelectQuantityPro,
     VoteOption,
-    QuickView
+    QuickView,
+    Cart
 } from './product'
 export {
     BreadCrumbs,

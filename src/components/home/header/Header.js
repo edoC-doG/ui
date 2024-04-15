@@ -3,13 +3,14 @@ import logo from 'assets/logo.png'
 import icons from 'utils/icons'
 import { Link } from 'react-router-dom'
 import path from 'utils/path'
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { logout } from 'store/user/userSlice'
+import withBase from 'hocs/withBase'
+import { showCart } from 'store/app/appSlice'
 
-const Header = () => {
+const Header = ({ dispatch }) => {
     const { current } = useSelector(state => state.user)
     const [isShowOption, setIsShowOption] = useState(false)
-    const dispatch = useDispatch()
     const { RiPhoneFill, MdMail, BsHandbagFill, FaUserCircle } = icons
     useEffect(() => {
         const handleClickoutOptions = (e) => {
@@ -42,7 +43,10 @@ const Header = () => {
                     <span>Online Support 24/7</span>
                 </div>
                 {current && <Fragment>
-                    <div className='flex items-center justify-center gap-2 px-6 border-r cursor-pointer'>
+                    <div
+                        onClick={() => dispatch(showCart())}
+                        className='flex items-center justify-center gap-2 px-6 border-r cursor-pointer'
+                    >
                         <BsHandbagFill color='red' />
                         <span>{`${current?.cart?.length || 0} item(s)`}</span>
                     </div>
@@ -84,4 +88,4 @@ const Header = () => {
     )
 }
 
-export default memo(Header)
+export default withBase(memo(Header))

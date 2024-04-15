@@ -5,7 +5,7 @@ import {
     BsFillSuitHeartFill,
     BsShieldShaded,
     BsReplyFill, BsFillCartCheckFill,
-    BsCartPlusFill
+    BsCartPlusFill,
 } from 'react-icons/bs'
 import { FaUserCircle, FaTty } from 'react-icons/fa'
 import { IoMenu, IoTrashBinOutline } from 'react-icons/io5'
@@ -21,8 +21,8 @@ import {
     AiFillGift,
     AiOutlineDown,
     AiOutlineCaretUp,
-    AiOutlineCaretDown
-
+    AiOutlineCaretDown,
+    AiOutlineCloseCircle
 } from 'react-icons/ai'
 
 const icons = {
@@ -45,7 +45,7 @@ const icons = {
     HiHome,
     MdGroups,
     LiaSitemapSolid,
-    AiOutlineCaretDown,
+    AiOutlineCaretDown, AiOutlineCloseCircle,
     AiOutlineCaretUp,
     BiEdit, BiCustomize,
     RiDeleteBin6Line,
