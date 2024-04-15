@@ -3,7 +3,7 @@ import login from 'assets/login.jpg'
 import { Button, InputField, Loading } from 'components'
 import { apiLogin, apiForgotPwd, apiFinalRegister, apiRegister } from 'apis/user'
 import Swal from 'sweetalert2'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import path from 'utils/path'
 import { registerV2 } from 'store/user/userSlice'
 import { useDispatch } from 'react-redux'
@@ -27,6 +27,7 @@ const Login = () => {
         lastName: ''
     })
     const [invalidFields, setInvalidFields] = useState([])
+    const [searchParams] = useSearchParams()
     const resetPayload = () => {
         setPayload({
             email: '',
@@ -54,7 +55,7 @@ const Login = () => {
                 const rs = await apiLogin(data)
                 if (rs.success) {
                     dispatch(registerV2({ isLoggedIn: true, userData: rs.userData, token: rs.accessToken }))
-                    navigate(`/${path.HOME}`)
+                    searchParams.get('redirect') ? navigate(searchParams.get('redirect')) : navigate(`/${path.HOME}`)
                 } else Swal.fire('Oops!', rs.mes, 'error')
             }
         }

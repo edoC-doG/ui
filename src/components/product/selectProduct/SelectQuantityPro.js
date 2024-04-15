@@ -8,7 +8,7 @@ const SelectQuantityPro = ({ quantity, handleQuantity, handleChangeQuantity }) =
                 className='p-2 border-r cursor-pointer border-black'
             >-</span>
             <input
-                className='w-[50px] py-2 text-center outline-none'
+                className='w-[50px] py-2 text-center outline-none border-none'
                 type="text"
                 value={quantity}
                 onChange={e => handleQuantity(e.target.value)}

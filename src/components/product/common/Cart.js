@@ -8,9 +8,10 @@ import { Button } from 'components';
 import { toast } from 'react-toastify'
 import { getCurrentUser } from 'store/user/asyncAction'
 import { apiRemoveCart } from 'apis'
+import path from 'utils/path'
 
 const { AiOutlineCloseCircle, IoTrashBinOutline } = icons
-const Cart = ({ dispatch }) => {
+const Cart = ({ dispatch, navigate }) => {
     const { current } = useSelector(state => state.user)
     const removeCart = async (pid) => {
         const res = await apiRemoveCart(pid)
@@ -60,7 +61,15 @@ const Cart = ({ dispatch }) => {
                 <span className='text-center text-gray-700 italic text-xs'>
                     Shipping , taxes, and discounts calculate at checkout.
                 </span>
-                <Button style={`rounded-none w-full bg-main py-3`}>Shopping cart</Button>
+                <Button
+                    handleOnClick={() => {
+                        dispatch(showCart())
+                        navigate(`/${path.DETAIL_CART}`)
+                    }}
+                    style={`rounded-none w-full bg-main py-3`}
+                >
+                    Shopping cart
+                </Button>
             </div>
         </div >
     )

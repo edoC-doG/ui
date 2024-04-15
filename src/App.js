@@ -21,7 +21,7 @@ import {
   ManagerProduct,
   ManagerUser
 } from './pages/admin'
-import { History, LayoutMember, Member, Mycart, WishList } from './pages/member'
+import { DetailCart, History, LayoutMember, Member, Mycart, WishList } from './pages/member'
 import { getCategories } from './store/app/asyncAction';
 import { useDispatch, useSelector } from 'react-redux'
 import { Cart, Modal } from './components'
@@ -47,6 +47,7 @@ function App() {
       <Routes>
         <Route path={path.PUBLIC} element={<PublicPage />}>
           <Route path={path.HOME} element={<Home />} />
+          <Route path={path.DETAIL_CART} element={<DetailCart />} />
           <Route path={path.OUR_SERVICES} element={<Services />} />
           <Route path={path.FAQS} element={<FAQ />} />
           <Route path={path.BLOGS} element={<Blogs />} />

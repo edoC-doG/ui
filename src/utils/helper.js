@@ -1,4 +1,7 @@
+import Swal from "sweetalert2";
 import icons from "./icons"
+import path from "./path";
+import { createSearchParams } from "react-router-dom";
 
 const { AiFillStar, AiOutlineStar } = icons
 
@@ -76,3 +79,28 @@ export function getBase64(file) {
         reader.onerror = error => reject(error)
     })
 }
+
+export const checkLogin = ({ current, navigate, location }) => {
+    return new Promise((resolve, reject) => {
+        if (!current) {
+            Swal.fire({
+                text: 'Login to continue action !!!',
+                cancelButtonText: 'Not now',
+                confirmButtonText: 'Go Login',
+                showCancelButton: true,
+                title: 'Opps',
+            }).then((rs) => {
+                if (rs.isConfirmed) {
+                    navigate({
+                        pathname: `/${path.LOGIN}`,
+                        search: createSearchParams({ redirect: location.pathname }).toString()
+                    })
+                } else {
+                    // navigate(`/${path.HOME}`)
+                }
+            })
+        } else {
+            resolve();
+        }
+    });
+} 

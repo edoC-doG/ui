@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react'
-import { formatMoney, formatPrice, renderStarFromNumber } from 'utils/helper'
+import { checkLogin, formatMoney, formatPrice, renderStarFromNumber } from 'utils/helper'
 import label from 'assets/new.png'
 import labelBlue from 'assets/trending.png'
 import { SelectOption } from '../..'
@@ -16,34 +16,13 @@ import path from 'utils/path'
 
 const { AiFillEye, BsCartPlusFill, BsFillSuitHeartFill, BsFillCartCheckFill } = icons
 
-const ProductItem = ({ productData, isNew, normal, navigate, dispatch }) => {
+const ProductItem = ({ productData, isNew, normal, navigate, dispatch, location }) => {
     const [isShowOption, setIsShowOption] = useState(false)
     const { current } = useSelector(state => state.user)
-    const checkLogin = () => {
-        return new Promise((resolve, reject) => {
-            if (!current) {
-                Swal.fire({
-                    text: 'Login to continue action !!!',
-                    cancelButtonText: 'Not now',
-                    confirmButtonText: 'Go Login',
-                    showCancelButton: true,
-                    title: 'Opps',
-                }).then((rs) => {
-                    if (rs.isConfirmed) {
-                        navigate(`/${path.LOGIN}`)
-                    } else {
-                        // navigate(`/${path.HOME}`)
-                    }
-                })
-            } else {
-                resolve();
-            }
-        });
-    }
     const handleClickOptions = async (e, flag) => {
         e.stopPropagation()
         if (flag === 'Cart') {
-            await checkLogin()
+            await checkLogin({ current, navigate, location })
             const res = await apiUpdateCart({ pid: productData._id, color: productData.color })
             if (res.success) {
                 toast.success(res.mes)
@@ -75,7 +54,7 @@ const ProductItem = ({ productData, isNew, normal, navigate, dispatch }) => {
                 <div className='w-full relative'>
                     {isShowOption && <div className='absolute bottom-[-10px] left-0 right-0 flex gap-4 justify-center animate-slide-top'>
                         <span title='Quick View' onClick={e => handleClickOptions(e, 'QuickView')}> <SelectOption icon={<AiFillEye />} /></span>
-                        {current?.cart?.some(el => el.product === productData._id.toString())
+                        {current?.cart?.some(el => el.product._id === productData._id.toString())
                             ? <span title='Added to cart' ><SelectOption icon={<BsFillCartCheckFill color='green' />} /></span>
                             : <span title='Add to cart' onClick={e => handleClickOptions(e, 'Cart')} ><SelectOption icon={<BsCartPlusFill />} /></span>
                         }

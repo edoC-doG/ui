@@ -1,14 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { apiGetProduct, apiGetProducts } from 'apis'
+import { apiGetProduct, apiGetProducts, apiUpdateCart } from 'apis'
 import { BreadCrumbs, Button, CustomSlider, ProdDesInf, ProdExtraInfItem, SelectQuantityPro } from 'components'
 import Slider from "react-slick"
 import ReactImageMagnify from 'react-image-magnify';
-import { formatMoney, formatPrice, renderStarFromNumber } from 'utils/helper'
+import { checkLogin, formatMoney, formatPrice, renderStarFromNumber } from 'utils/helper'
 import { toast } from 'react-toastify';
 import { prodExtraInf } from 'utils/constFiel'
 import DOMPurify from 'dompurify'
 import clsx from 'clsx'
+import { useSelector } from 'react-redux'
+import withBase from 'hocs/withBase'
+import { getCurrentUser } from 'store/user/asyncAction'
 const settings = {
     dots: false,
     isFinite: true,
@@ -17,8 +20,9 @@ const settings = {
     slidesToScroll: 1,
 }
 
-const DetailProduct = ({ isQuickView, data }) => {
+const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
     const params = useParams()
+    const { current } = useSelector(state => state.user)
     const [product, setProduct] = useState(null)
     const [quantity, setQuantity] = useState(1)
     const [update, setUpdate] = useState(false)
@@ -102,9 +106,20 @@ const DetailProduct = ({ isQuickView, data }) => {
         if (flag === 'plus') setQuantity(prev => +prev + 1)
     }, [quantity])
 
+    const handleAddtoCart = async () => {
+        await checkLogin({ current, navigate, location })
+        const res = await apiUpdateCart({ pid, color: currentProd.color, quantity })
+        if (res.success) {
+            toast.success(res.mes)
+            dispatch(getCurrentUser())
+        }
+        else toast.error(res.mes)
+    }
+
     useEffect(() => {
         if (pid) fetchProductData()
     }, [update])
+
     return (
         <div className={clsx('w-full')}>
             {!isQuickView && <div className='h-[81px] flex items-center justify-center bg-gray-100'>
@@ -215,7 +230,7 @@ const DetailProduct = ({ isQuickView, data }) => {
                                 handleChangeQuantity={handleChangeQuantity}
                             />
                         </div>
-                        <Button fw>
+                        <Button handleOnClick={handleAddtoCart} fw>
                             Add to cart
                         </Button>
                     </div>
@@ -254,4 +269,4 @@ const DetailProduct = ({ isQuickView, data }) => {
     )
 }
 
-export default DetailProduct
+export default withBase(memo(DetailProduct))
