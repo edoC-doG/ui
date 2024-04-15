@@ -20,7 +20,8 @@ export {
     SearchItem,
     SelectOption,
     SelectQuantityPro,
-    VoteOption
+    VoteOption,
+    QuickView
 } from './product'
 export {
     BreadCrumbs,

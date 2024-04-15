@@ -4,25 +4,26 @@ import label from 'assets/new.png'
 import labelBlue from 'assets/trending.png'
 import { SelectOption } from '../..'
 import icons from 'utils/icons';
-import { Link } from 'react-router-dom'
-import path from 'utils/path'
 import withBase from 'hocs/withBase'
+import { showModal } from 'store/app/appSlice'
+import { DetailProduct } from 'pages/public'
 
 const { AiFillEye, IoMenu, BsFillSuitHeartFill } = icons
 
-const ProductItem = ({ productData, isNew, normal, navigate }) => {
+const ProductItem = ({ productData, isNew, normal, navigate, dispatch }) => {
     const [isShowOption, setIsShowOption] = useState(false)
     const handleClickOptions = (e, flag) => {
         e.stopPropagation()
         if (flag === 'Menu') navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`)
         if (flag === 'WishList') console.log('WishList')
-        if (flag === 'QuickView') console.log('QuickView')
+        if (flag === 'QuickView') {
+            dispatch(showModal({ isShowModal: true, modalChildren: <DetailProduct data={{ pid: productData?._id, category: productData?.category }} isQuickView /> }))
+        }
     }
     return (
         <div className='w-full text-base px-[10px]'>
             <div
                 className='w-full border p-[15px] flex-col flex items-center gap-2'
-                onClick={e => navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`)}
                 onMouseEnter={e => {
                     e.stopPropagation()
                     setIsShowOption(true)
@@ -39,9 +40,10 @@ const ProductItem = ({ productData, isNew, normal, navigate }) => {
                         <span onClick={e => handleClickOptions(e, 'WishList')}> <SelectOption icon={<BsFillSuitHeartFill />} /></span>
                     </div>}
                     <img
+                        onClick={e => navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`)}
                         src={productData?.thumb || 'https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png'}
                         alt="Images"
-                        className='w-[274px] h-[274px] object-cover'
+                        className='w-[274px] h-[274px] object-cover cursor-pointer'
                     />
                     {!normal && <img
                         src={isNew ? label : labelBlue}
