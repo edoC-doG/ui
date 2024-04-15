@@ -7,17 +7,58 @@ import icons from 'utils/icons';
 import withBase from 'hocs/withBase'
 import { showModal } from 'store/app/appSlice'
 import { DetailProduct } from 'pages/public'
+import { apiUpdateCart } from 'apis'
+import { toast } from 'react-toastify'
+import { getCurrentUser } from 'store/user/asyncAction'
+import { useSelector } from 'react-redux'
+import Swal from 'sweetalert2'
+import path from 'utils/path'
 
-const { AiFillEye, IoMenu, BsFillSuitHeartFill } = icons
+const { AiFillEye, BsCartPlusFill, BsFillSuitHeartFill, BsFillCartCheckFill } = icons
 
 const ProductItem = ({ productData, isNew, normal, navigate, dispatch }) => {
+    console.log(productData)
     const [isShowOption, setIsShowOption] = useState(false)
-    const handleClickOptions = (e, flag) => {
+    const { current } = useSelector(state => state.user)
+    const checkLogin = () => {
+        return new Promise((resolve, reject) => {
+            if (!current) {
+                Swal.fire({
+                    text: 'Login to continue action !!!',
+                    cancelButtonText: 'Not now',
+                    confirmButtonText: 'Go Login',
+                    showCancelButton: true,
+                    title: 'Opps',
+                }).then((rs) => {
+                    if (rs.isConfirmed) {
+                        navigate(`/${path.LOGIN}`)
+                    } else {
+                        // navigate(`/${path.HOME}`)
+                    }
+                })
+            } else {
+                resolve();
+            }
+        });
+    }
+    const handleClickOptions = async (e, flag) => {
         e.stopPropagation()
-        if (flag === 'Menu') navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`)
-        if (flag === 'WishList') console.log('WishList')
+        if (flag === 'Cart') {
+            await checkLogin()
+            const res = await apiUpdateCart({ pid: productData._id, color: productData.color })
+            console.log({ pid: productData._id, color: productData.color })
+            if (res.success) {
+                toast.success(res.mes)
+                dispatch(getCurrentUser())
+            }
+            else toast.error(res.mes)
+        }
         if (flag === 'QuickView') {
             dispatch(showModal({ isShowModal: true, modalChildren: <DetailProduct data={{ pid: productData?._id, category: productData?.category }} isQuickView /> }))
+        }
+        if (flag === 'WishList') {
+            checkLogin()
+            console.log('WishList')
         }
     }
     return (
@@ -35,9 +76,12 @@ const ProductItem = ({ productData, isNew, normal, navigate, dispatch }) => {
             >
                 <div className='w-full relative'>
                     {isShowOption && <div className='absolute bottom-[-10px] left-0 right-0 flex gap-4 justify-center animate-slide-top'>
-                        <span onClick={e => handleClickOptions(e, 'QuickView')}> <SelectOption icon={<AiFillEye />} /></span>
-                        <span onClick={e => handleClickOptions(e, 'Menu')}><SelectOption icon={<IoMenu />} /></span>
-                        <span onClick={e => handleClickOptions(e, 'WishList')}> <SelectOption icon={<BsFillSuitHeartFill />} /></span>
+                        <span title='Quick View' onClick={e => handleClickOptions(e, 'QuickView')}> <SelectOption icon={<AiFillEye />} /></span>
+                        {current?.cart?.some(el => el.product === productData._id.toString())
+                            ? <span title='Added to cart' ><SelectOption icon={<BsFillCartCheckFill color='green' />} /></span>
+                            : <span title='Add to cart' onClick={e => handleClickOptions(e, 'Cart')} ><SelectOption icon={<BsCartPlusFill />} /></span>
+                        }
+                        <span title='Wish List' onClick={e => handleClickOptions(e, 'WishList')}> <SelectOption icon={<BsFillSuitHeartFill />} /></span>
                     </div>}
                     <img
                         onClick={e => navigate(`/${productData?.category?.toLowerCase()}/${productData?._id}/${productData?.title}`)}

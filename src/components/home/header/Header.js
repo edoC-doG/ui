@@ -14,7 +14,7 @@ const Header = () => {
     useEffect(() => {
         const handleClickoutOptions = (e) => {
             const profile = document.getElementById('profile')
-            if (!profile.contains(e.target)) setIsShowOption(false)
+            if (!profile?.contains(e.target)) setIsShowOption(false)
         }
         document.addEventListener('click', handleClickoutOptions)
         return () => {
@@ -44,7 +44,7 @@ const Header = () => {
                 {current && <Fragment>
                     <div className='flex items-center justify-center gap-2 px-6 border-r cursor-pointer'>
                         <BsHandbagFill color='red' />
-                        <span>0 item(s)</span>
+                        <span>{`${current?.cart?.length || 0} item(s)`}</span>
                     </div>
                     <div
                         className='relative flex items-center justify-center px-6 gap-2 cursor-pointer'

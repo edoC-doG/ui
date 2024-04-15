@@ -4,7 +4,8 @@ import {
     BsHandbagFill,
     BsFillSuitHeartFill,
     BsShieldShaded,
-    BsReplyFill
+    BsReplyFill, BsFillCartCheckFill,
+    BsCartPlusFill
 } from 'react-icons/bs'
 import { FaUserCircle, FaTty } from 'react-icons/fa'
 import { IoMenu, IoTrashBinOutline } from 'react-icons/io5'
@@ -48,7 +49,7 @@ const icons = {
     AiOutlineCaretUp,
     BiEdit, BiCustomize,
     RiDeleteBin6Line,
-    IoTrashBinOutline,
+    IoTrashBinOutline, BsCartPlusFill, BsFillCartCheckFill
 
 }
 

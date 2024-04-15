@@ -20,7 +20,7 @@ const ProductPage = () => {
     const { category } = useParams()
     const [sort, setSort] = useState('')
     const fetchProdByCate = async (queries) => {
-        const res = await apiGetProducts({ ...queries, limit: process.env.REACT_APP_LIMIT })
+        const res = await apiGetProducts({ ...queries, limit: process.env.REACT_APP_LIMIT, category })
         if (res.success) setProducts(res)
     }
     useEffect(() => {

@@ -32,7 +32,7 @@ const TopHeader = () => {
     }, [])
     return (
         <div
-            className='w-full h-[38px] flex items-center justify-center bg-main'
+            className='w-full min-h-[38px] flex items-center justify-center bg-main'
         >
             <div
                 className='w-main flex items-center justify-between text-white text-xs'
