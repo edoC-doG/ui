@@ -38,6 +38,53 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
         price: '',
         color: ''
     })
+
+    const fetchProducts = async () => {
+        const res = await apiGetProducts({ category })
+        if (res.success) {
+            setRelatedProd(res.products)
+        }
+    }
+    const reRender = useCallback(() => {
+        setUpdate(prev => !prev)
+    }, [])
+
+    const handleAddtoCart = async () => {
+        await checkLogin({ current, navigate, location })
+        const res = await apiUpdateCart({
+            pid,
+            title: currentProd.title || product?.title,
+            color: currentProd.color || product?.color,
+            price: currentProd.price || product?.price,
+            quantity,
+            thumbNail: currentProd.thumb || product?.thumb,
+        })
+        if (res.success) {
+            toast.success(res.mes)
+            dispatch(getCurrentUser())
+        }
+        else toast.error(res.mes)
+    }
+
+    const handleQuantity = useCallback((number) => {
+        if (!Number(number) || Number(number) < 1) {
+            return
+        } else setQuantity(number)
+    }, [quantity])
+
+    const handleSwapImg = (e, el) => {
+        e.stopPropagation()
+        setCurrentImg(el)
+    }
+    const handleChangeQuantity = useCallback((flag) => {
+        if (flag === 'minus' && quantity === 1) {
+            toast.warning('Do not buy item has quantity equal than 0')
+            return
+        }
+        if (flag === 'minus') setQuantity(prev => +prev - 1)
+        if (flag === 'plus') setQuantity(prev => +prev + 1)
+    }, [quantity])
+
     useEffect(() => {
         if (data) {
             setCategory(data.category)
@@ -66,19 +113,23 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
                     color: product?.variants?.find(el => el.sku === variantsItem)?.color,
                 }
             )
-            setCurrentImg(product?.variants?.find(el => el.sku === variantsItem)?.thumb)
+        } else {
+            setCurrentProd(
+                {
+                    title: product?.title,
+                    thumb: product?.thumb,
+                    price: product?.price,
+                    images: product?.images,
+                    color: product?.color,
+                }
+            )
         }
     }, [variantsItem])
-    const fetchProducts = async () => {
-        const res = await apiGetProducts({ category })
-        if (res.success) {
-            setRelatedProd(res.products)
-        }
-    }
 
-    const reRender = useCallback(() => {
-        setUpdate(prev => !prev)
-    }, [])
+    useEffect(() => {
+        if (pid) fetchProductData()
+    }, [update])
+
     useEffect(() => {
         if (pid) {
             fetchProductData()
@@ -86,46 +137,12 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
         }
         window.scrollTo(0, 0)
     }, [pid])
-
-    const handleQuantity = useCallback((number) => {
-        if (!Number(number) || Number(number) < 1) {
-            return
-        } else setQuantity(number)
-    }, [quantity])
-
-    const handleSwapImg = (e, el) => {
-        e.stopPropagation()
-        setCurrentImg(el)
-    }
-    const handleChangeQuantity = useCallback((flag) => {
-        if (flag === 'minus' && quantity === 1) {
-            toast.warning('Do not buy item has quantity equal than 0')
-            return
-        }
-        if (flag === 'minus') setQuantity(prev => +prev - 1)
-        if (flag === 'plus') setQuantity(prev => +prev + 1)
-    }, [quantity])
-
-    const handleAddtoCart = async () => {
-        await checkLogin({ current, navigate, location })
-        const res = await apiUpdateCart({ pid, color: currentProd.color, quantity })
-        if (res.success) {
-            toast.success(res.mes)
-            dispatch(getCurrentUser())
-        }
-        else toast.error(res.mes)
-    }
-
-    useEffect(() => {
-        if (pid) fetchProductData()
-    }, [update])
-
     return (
         <div className={clsx('w-full')}>
             {!isQuickView && <div className='h-[81px] flex items-center justify-center bg-gray-100'>
                 <div className='w-main'>
-                    <h3 className='font-semibold'>{variantsItem !== null ? currentProd?.title : product?.title}</h3>
-                    <BreadCrumbs title={variantsItem !== null ? currentProd?.title : product?.title} category={category} />
+                    <h3 className='font-semibold'>{currentProd?.title || product?.title}</h3>
+                    <BreadCrumbs title={currentProd?.title || product?.title} category={category} />
                 </div>
             </div>}
             <div onClick={e => e.stopPropagation()} className={clsx(' bg-white m-auto mt-4 flex', isQuickView ? 'max-w-[900px] p-8 gap-16 max-h-[100vh] overflow-y-auto' : 'w-main')}>
@@ -135,10 +152,10 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
                             smallImage: {
                                 alt: '',
                                 isFluidWidth: true,
-                                src: variantsItem !== null ? currentProd?.thumb : currentImg
+                                src: currentProd?.thumb
                             },
                             largeImage: {
-                                src: variantsItem !== null ? currentProd?.thumb : currentImg,
+                                src: currentProd?.thumb,
                                 width: 1800,
                                 height: 1500
                             }
@@ -171,9 +188,9 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
                         </Slider>
                     </div>
                 </div>
-                <div className={('w-2/5 pr-6 flex flex-col gap-4', isQuickView && 'w-1/2')}>
+                <div className={clsx('w-2/5 pr-6 flex flex-col gap-4', isQuickView && 'w-1/2')}>
                     <div className='flex items-center justify-between'>
-                        <h2 className='text-[30px] font-semibold'>{`${formatMoney(formatPrice(variantsItem !== null ? currentProd?.price : product?.price))} VND`}</h2>
+                        <h2 className='text-[30px] font-semibold'>{`${formatMoney(formatPrice(currentProd?.price || product?.price))} VND`}</h2>
                         <span className='text-sm text-main'>{`In stock: ${product?.quantity}`}</span>
                     </div>
                     <div className='flex items-center gap-1'>

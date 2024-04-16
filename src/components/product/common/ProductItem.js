@@ -11,8 +11,6 @@ import { apiUpdateCart } from 'apis'
 import { toast } from 'react-toastify'
 import { getCurrentUser } from 'store/user/asyncAction'
 import { useSelector } from 'react-redux'
-import Swal from 'sweetalert2'
-import path from 'utils/path'
 
 const { AiFillEye, BsCartPlusFill, BsFillSuitHeartFill, BsFillCartCheckFill } = icons
 

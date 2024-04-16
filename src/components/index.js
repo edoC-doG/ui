@@ -22,7 +22,8 @@ export {
     SelectQuantityPro,
     VoteOption,
     QuickView,
-    Cart
+    Cart,
+    OrderItem
 } from './product'
 export {
     BreadCrumbs,

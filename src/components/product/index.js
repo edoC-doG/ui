@@ -11,4 +11,5 @@ export { default as RatingBar } from './reviewProduct/RatingBar'
 export { default as Comment } from './reviewProduct/Comment'
 export { default as QuickView } from './common/QuickView'
 export { default as Cart } from './common/Cart'
+export { default as OrderItem } from './common/OrderItem'
 
