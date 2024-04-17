@@ -23,6 +23,7 @@ export {
     VoteOption,
     QuickView,
     Cart,
+    Paypal,
     OrderItem
 } from './product'
 export {

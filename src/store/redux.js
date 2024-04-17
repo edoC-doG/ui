@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import appSlice from './app/appSlice';
 import productSlice from './products/productSlice';
 import storage from 'redux-persist/lib/storage';
-import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist'
+import { persistReducer, persistStore } from 'redux-persist'
 import userSlice from './user/userSlice';
 const commonConfig = {
   key: 'shop/user',
@@ -11,7 +11,7 @@ const commonConfig = {
 
 const userConfig = {
   ...commonConfig,
-  whitelist: ['isLoggedIn', 'token', 'current']
+  whitelist: ['isLoggedIn', 'token', 'current', 'currentCart']
 }
 
 export const store = configureStore({

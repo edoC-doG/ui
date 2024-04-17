@@ -90,7 +90,7 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
         const res = await apiGetProduct(pid)
         if (res.success) {
             setProduct(res.productData)
-            setCurrentImg(res.productData?.thumb)
+            setCurrentImg(res.productData?.images)
         }
     }
 
@@ -141,6 +141,7 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
         window.scrollTo(0, 0)
         titleRef.current.scrollIntoView({ block: 'center' })
     }, [pid])
+    console.log(currentProd)
     return (
         <div className={clsx('w-full')}>
             {!isQuickView && <div className='h-[81px] flex items-center justify-center bg-gray-100'>
@@ -156,10 +157,10 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
                             smallImage: {
                                 alt: '',
                                 isFluidWidth: true,
-                                src: currentProd?.thumb || product?.thumb
+                                src: currentImg
                             },
                             largeImage: {
-                                src: currentProd?.thumb || product?.thumb,
+                                src: currentImg,
                                 width: 1800,
                                 height: 1500
                             }
@@ -169,7 +170,7 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
                         <Slider
                             className='image-slider flex justify-between' {...settings}
                         >
-                            {currentProd.images?.length < 3 && product?.images?.map(el => (
+                            {currentProd.images?.length && product?.images?.map(el => (
                                 <div className='flex-1' key={el}>
                                     <img
                                         src={el}
