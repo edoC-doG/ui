@@ -12,7 +12,7 @@ import path from 'utils/path'
 
 const { AiOutlineCloseCircle, IoTrashBinOutline } = icons
 const Cart = ({ dispatch, navigate }) => {
-    const { current } = useSelector(state => state.user)
+    const { currentCart } = useSelector(state => state.user)
     const removeCart = async (pid, color) => {
         const res = await apiRemoveCart(pid, color)
         if (res.success) {
@@ -32,15 +32,16 @@ const Cart = ({ dispatch, navigate }) => {
                 </span>
             </header>
             <section className='row-span-7 flex flex-col max-h-full overflow-y-auto gap-3 py-3'>
-                {!current?.cart && <span className='text-xs italic'>Your Cart is Empty</span>}
-                {current?.cart && current?.cart?.map(el => (
+                {!currentCart && <span className='text-xs italic'>Your Cart is Empty</span>}
+                {currentCart && currentCart?.map(el => (
                     <div key={el._id} className='flex justify-between items-center '>
                         <div className='flex gap-2'>
-                            <img src={el.thumbNail} alt="thumb" className='w-16 h-16 object-cover' />
+                            <img src={el.thumbNail} alt="thumb" className='w-16 h-20 object-cover rounded-md' />
                             <div className='flex flex-col gap-1'>
                                 <span className='text-sm text-main'>{el.title}</span>
-                                <span className='text-[10px]'>{el.color}</span>
-                                <span className='text-sm'   >{`${formatMoney(formatPrice((el.price)))} VNĐ`}</span>
+                                <span className='text-[10px]'>{`Color: ${el.color}`}</span>
+                                <span className='text-[10px]'>{`Quantity : ${el.quantity}`}</span>
+                                <span className='text-sm'   >{`Price : ${formatMoney(formatPrice((el.price * el.quantity)))} VNĐ`}</span>
                             </div>
                         </div>
                         <span
@@ -56,7 +57,7 @@ const Cart = ({ dispatch, navigate }) => {
             <div className='row-span-2 h-full flex flex-col justify-between'>
                 <div className='flex items-center justify-between pt-4 border-t'>
                     <span>Subtotal:</span>
-                    <span>{formatMoney(formatPrice(current?.cart?.reduce((sum, el) => sum + Number(el.price), 0))) + 'VNĐ'}</span>
+                    <span>{formatMoney(formatPrice(currentCart?.reduce((sum, el) => sum + Number(el.price) * el.quantity, 0))) + 'VNĐ'}</span>
                 </div>
                 <span className='text-center text-gray-700 italic text-xs'>
                     Shipping , taxes, and discounts calculate at checkout.

@@ -21,10 +21,10 @@ import {
   ManagerProduct,
   ManagerUser
 } from './pages/admin'
-import { DetailCart, History, LayoutMember, Member, Mycart, WishList } from './pages/member'
+import { Checkout, DetailCart, History, LayoutMember, Member, Mycart, WishList } from './pages/member'
 import { getCategories } from './store/app/asyncAction';
 import { useDispatch, useSelector } from 'react-redux'
-import { Cart, Modal } from './components'
+import { Cart, Modal } from 'components'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { showCart } from 'store/app/appSlice';
@@ -69,6 +69,7 @@ function App() {
           <Route path={path.WISH_LIST} element={<WishList />} />
         </Route>
         <Route path={path.LOGIN} element={<Login />} />
+        <Route path={path.CHECK_OUT} element={<Checkout />} />
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
       </Routes>
       <ToastContainer

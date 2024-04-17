@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { apiGetProduct, apiGetProducts, apiUpdateCart } from 'apis'
 import { BreadCrumbs, Button, CustomSlider, ProdDesInf, ProdExtraInfItem, SelectQuantityPro } from 'components'
@@ -21,6 +21,7 @@ const settings = {
 }
 
 const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
+    const titleRef = useRef()
     const params = useParams()
     const { current } = useSelector(state => state.user)
     const [product, setProduct] = useState(null)
@@ -85,6 +86,14 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
         if (flag === 'plus') setQuantity(prev => +prev + 1)
     }, [quantity])
 
+    const fetchProductData = async () => {
+        const res = await apiGetProduct(pid)
+        if (res.success) {
+            setProduct(res.productData)
+            setCurrentImg(res.productData?.thumb)
+        }
+    }
+
     useEffect(() => {
         if (data) {
             setCategory(data.category)
@@ -95,13 +104,7 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
             setPid(params.pid)
         }
     }, [data, params])
-    const fetchProductData = async () => {
-        const res = await apiGetProduct(pid)
-        if (res.success) {
-            setProduct(res.productData)
-            setCurrentImg(res.productData?.thumb)
-        }
-    }
+
     useEffect(() => {
         if (variantsItem) {
             setCurrentProd(
@@ -124,11 +127,11 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
                 }
             )
         }
-    }, [variantsItem])
+    }, [variantsItem, product])
 
     useEffect(() => {
         if (pid) fetchProductData()
-    }, [update])
+    }, [update, pid])
 
     useEffect(() => {
         if (pid) {
@@ -136,11 +139,12 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
             fetchProducts()
         }
         window.scrollTo(0, 0)
+        titleRef.current.scrollIntoView({ block: 'center' })
     }, [pid])
     return (
         <div className={clsx('w-full')}>
             {!isQuickView && <div className='h-[81px] flex items-center justify-center bg-gray-100'>
-                <div className='w-main'>
+                <div ref={titleRef} className='w-main'>
                     <h3 className='font-semibold'>{currentProd?.title || product?.title}</h3>
                     <BreadCrumbs title={currentProd?.title || product?.title} category={category} />
                 </div>
@@ -152,10 +156,10 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
                             smallImage: {
                                 alt: '',
                                 isFluidWidth: true,
-                                src: currentProd?.thumb
+                                src: currentProd?.thumb || product?.thumb
                             },
                             largeImage: {
-                                src: currentProd?.thumb,
+                                src: currentProd?.thumb || product?.thumb,
                                 width: 1800,
                                 height: 1500
                             }
@@ -165,7 +169,7 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
                         <Slider
                             className='image-slider flex justify-between' {...settings}
                         >
-                            {currentProd.images.length < 3 && product?.images?.map(el => (
+                            {currentProd.images?.length < 3 && product?.images?.map(el => (
                                 <div className='flex-1' key={el}>
                                     <img
                                         src={el}
@@ -175,7 +179,7 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
                                     />
                                 </div>
                             ))}
-                            {currentProd.images.length > 3 && currentProd.images?.map(el => (
+                            {currentProd.images?.length > 3 && currentProd.images?.map(el => (
                                 <div className='flex-1' key={el}>
                                     <img
                                         src={el}

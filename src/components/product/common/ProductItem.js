@@ -21,7 +21,14 @@ const ProductItem = ({ productData, isNew, normal, navigate, dispatch, location 
         e.stopPropagation()
         if (flag === 'Cart') {
             await checkLogin({ current, navigate, location })
-            const res = await apiUpdateCart({ pid: productData._id, color: productData.color })
+            const res = await apiUpdateCart({
+                pid: productData?._id,
+                color: productData?.color,
+                title: productData?.title,
+                price: productData?.price,
+                quantity: 1,
+                thumbNail: productData?.thumb,
+            })
             if (res.success) {
                 toast.success(res.mes)
                 dispatch(getCurrentUser())
@@ -33,7 +40,6 @@ const ProductItem = ({ productData, isNew, normal, navigate, dispatch, location 
         }
         if (flag === 'WishList') {
             checkLogin()
-            console.log('WishList')
         }
     }
     return (

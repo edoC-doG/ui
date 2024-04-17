@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Banner, Sidebar, BestSeller, DealDaily, FeatureProduct, CustomSlider } from 'components'
 import { useSelector } from 'react-redux';
 import icons from 'utils/icons';
@@ -76,4 +76,4 @@ const Home = () => {
     )
 }
 
-export default Home
+export default memo(Home)

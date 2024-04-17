@@ -29,7 +29,7 @@ export const navigation = [
     },
 ]
 
-const { RiTruckFill, BsShieldShaded, BsReplyFill, FaTty, AiFillGift, HiHome, MdGroups, LiaSitemapSolid } = icons
+const { RiTruckFill, BsShieldShaded, BsReplyFill, FaTty, AiFillGift, HiHome, MdGroups, LiaSitemapSolid, AiOutlineLogout } = icons
 
 export const prodExtraInf = [
     {
@@ -247,6 +247,12 @@ export const sideBarMemBer = [
         text: 'Wish List',
         path: `/${path.MEMBER}/${path.WISH_LIST}`,
         icons: <LiaSitemapSolid />
+    }, {
+        id: 5,
+        type: 'SINGLE',
+        text: 'Go Home',
+        path: `/`,
+        icons: <AiOutlineLogout />
     },
 ]
 

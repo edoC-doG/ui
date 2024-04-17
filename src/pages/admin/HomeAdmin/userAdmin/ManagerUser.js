@@ -58,7 +58,6 @@ const ManagerUser = () => {
         } else toast.error(res.mes)
     }
     const handleDelete = (uid) => {
-        console.log(uid)
         Swal.fire({
             title: 'Are you sure delete this user',
             text: ' Are you ready remove this user ?',
