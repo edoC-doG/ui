@@ -13,4 +13,5 @@ export { default as QuickView } from './common/QuickView'
 export { default as Cart } from './common/Cart'
 export { default as OrderItem } from './common/OrderItem'
 export { default as Paypal } from './common/Paypal'
+export { default as Congrat } from './common/Congrat'
 

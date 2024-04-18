@@ -1,20 +1,27 @@
-import React, { memo, useEffect } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import payment from 'assets/online-payment.svg'
 import { useSelector } from 'react-redux'
 import { formatMoney, formatPrice } from 'utils/helper'
-import { InputForm, Paypal } from 'components'
+import { Congrat, InputForm, Paypal } from 'components'
 import { useForm } from 'react-hook-form'
+import withBase from 'hocs/withBase'
+import { getCurrentUser } from 'store/user/asyncAction'
 
 
-const Checkout = () => {
+const Checkout = ({ dispatch }) => {
     const { currentCart, current } = useSelector(state => state.user)
+    const [isSuccess, setIsSuccess] = useState(false)
     const { register, formState: { errors }, watch, setValue } = useForm()
     const address = watch('address')
     useEffect(() => {
         setValue('address', current?.address)
-    }, [current])
+    }, [current.address])
+    useEffect(() => {
+        if (isSuccess) dispatch(getCurrentUser())
+    }, [isSuccess])
     return (
         <div className='p-8 w-full grid grid-cols-10 h-full max-h-screen overflow-y-auto gap-6'>
+            {isSuccess && <Congrat />}
             <div className='w-full flex justify-center items-center col-span-3'>
                 <img src={payment} alt="img" className='max-h-[70%] object-contain' />
             </div>
@@ -42,6 +49,7 @@ const Checkout = () => {
                         </table>
                         {address && address?.length > 10 && <div className='w-[70%] mx-auto'>
                             <Paypal
+                                setIsSuccess={setIsSuccess}
                                 payload={{
                                     products: currentCart,
                                     total: Math.round(formatPrice(+currentCart?.reduce((sum, el) => +el?.price * el.quantity + sum, 0)) / 23500),
@@ -79,4 +87,4 @@ const Checkout = () => {
     )
 }
 
-export default memo(Checkout)
+export default withBase(memo(Checkout))

@@ -24,7 +24,8 @@ export {
     QuickView,
     Cart,
     Paypal,
-    OrderItem
+    OrderItem,
+    Congrat
 } from './product'
 export {
     BreadCrumbs,
