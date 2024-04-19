@@ -16,8 +16,8 @@ const style = { "layout": "vertical" };
 const ButtonWrapper = ({ showSpinner, currency, amount, payload, setIsSuccess, }) => {
     const [{ isPending, options }, dispatch] = usePayPalScriptReducer();
     const navigate = useNavigate()
-    const location = useLocation()
     const handleSaveOrder = async () => {
+        console.log(payload)
         const res = await apiCreateOrder({ ...payload, status: 'Success' })
         if (res.success) {
             setIsSuccess(true)

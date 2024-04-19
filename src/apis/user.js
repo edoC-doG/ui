@@ -70,8 +70,13 @@ export const apiCreateOrder = (data) => axios({
     method: 'post',
     data
 })
-export const apiGetOrderAdmin = (data) => axios({
+export const apiGetOrderAdmin = (params) => axios({
     url: "/order/admin",
     method: 'get',
-    data
+    params
+})
+export const apiGetOrder = (params) => axios({
+    url: "/order/",
+    method: 'get',
+    params
 })

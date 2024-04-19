@@ -40,6 +40,7 @@ export {
     Pagination,
     Loading,
     Select,
-    MarkDownEditor
+    MarkDownEditor,
+    CustomerSelect
 } from './Utils'
 

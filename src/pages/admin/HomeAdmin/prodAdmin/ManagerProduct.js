@@ -1,25 +1,24 @@
 import { apiDeleteProd, apiGetProducts } from 'apis'
 import clsx from 'clsx'
-import { Button, InputForm, Pagination, C } from 'components'
+import { InputForm, Pagination } from 'components'
 import useDebounce from 'hooks/useDebounce'
 import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useSearchParams, useNavigate, useLocation, createSearchParams } from 'react-router-dom'
+import { useSearchParams, createSearchParams } from 'react-router-dom'
 import { formatMoney, formatPrice } from 'utils/helper'
 import UpdateProduct from './UpdateProduct'
 import Swal from 'sweetalert2'
 import { toast } from 'react-toastify'
 import icons from 'utils/icons'
 import CustomsizeProd from './CustomsizeProd'
+import withBase from 'hocs/withBase'
 
 
 const { BiCustomize, BiEdit, RiDeleteBin6Line } = icons
 
-const ManagerProduct = () => {
+const ManagerProduct = ({ location, navigate }) => {
     const [product, setProduct] = useState(null)
-    const navigate = useNavigate()
-    const location = useLocation()
     const [updateProd, setUpdateProd] = useState(null)
     const [params] = useSearchParams()
     const { register, formState: { errors }, watch } = useForm()
@@ -173,4 +172,4 @@ const ManagerProduct = () => {
     )
 }
 
-export default ManagerProduct
+export default withBase(ManagerProduct)

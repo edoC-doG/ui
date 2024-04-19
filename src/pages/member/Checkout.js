@@ -9,6 +9,7 @@ import { getCurrentUser } from 'store/user/asyncAction'
 
 const Checkout = ({ dispatch }) => {
     const { currentCart, current } = useSelector(state => state.user)
+    console.log(currentCart)
     const [isSuccess, setIsSuccess] = useState(false)
     useEffect(() => {
         if (isSuccess) dispatch(getCurrentUser())

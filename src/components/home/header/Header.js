@@ -38,7 +38,7 @@ const Header = ({ dispatch }) => {
                 <div className='flex flex-col items-center px-6 border-r'>
                     <span className='flex gap-4 items-center'>
                         <MdMail color='red' />
-                        <span className='font-semibold'>SUPPORT@TADATHEMES.COM</span>
+                        <span className='font-semibold'>longnmse@gmail.com</span>
                     </span>
                     <span>Online Support 24/7</span>
                 </div>
