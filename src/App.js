@@ -51,7 +51,7 @@ function App() {
           <Route path={path.OUR_SERVICES} element={<Services />} />
           <Route path={path.FAQS} element={<FAQ />} />
           <Route path={path.BLOGS} element={<Blogs />} />
-          <Route path={path.PRODUCTS} element={<ProductPage />} />
+          <Route path={path.PRODUCTS_CATEGORY} element={<ProductPage />} />
           <Route path={path.DETAIL_PRODUCT_CATE_PID_TITLE} element={<DetailProduct />} />
           <Route path={path.RESET_PWD} element={<ResetPwd />} />
         </Route>

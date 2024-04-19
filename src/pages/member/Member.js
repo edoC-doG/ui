@@ -2,17 +2,19 @@ import { Button, InputForm, Loading } from 'components'
 import moment from 'moment'
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import avatar from 'assets/userDefault.png';
 import { apiUpdateCurrent } from 'apis'
 import { getCurrentUser } from 'store/user/asyncAction'
 import Swal from 'sweetalert2'
 import { showModal } from 'store/app/appSlice'
+import { useSearchParams } from 'react-router-dom'
+import withBase from 'hocs/withBase'
 
-const Member = () => {
+const Member = ({ navigate, dispatch }) => {
     const { register, formState: { errors, isDirty }, reset, handleSubmit, watch } = useForm()
     const { current } = useSelector(state => state.user)
-    const dispatch = useDispatch()
+    const [searchParams] = useSearchParams()
     useEffect(() => {
         reset({
             firstName: current?.firstName,
@@ -20,6 +22,7 @@ const Member = () => {
             email: current?.email,
             mobile: current?.mobile,
             avatar: current?.avatar,
+            address: current?.address,
         })
     }, [])
     const handleUpdateInf = async (data) => {
@@ -33,6 +36,7 @@ const Member = () => {
         if (res.success) {
             dispatch(getCurrentUser())
             Swal.fire('Congratulation !!!', res.mes, 'success')
+            if (searchParams.get('redirect')) navigate(searchParams.get('redirect'))
         } else Swal.fire('Some thing went wrong !!!', res.mes, 'error')
     }
     return (
@@ -88,6 +92,14 @@ const Member = () => {
                             message: "Phone Invalid"
                         }
                     }}
+                /><InputForm
+                    label='Address'
+                    register={register}
+                    errors={errors}
+                    id='address'
+                    validate={{
+                        required: 'Need fill this field',
+                    }}
                 />
                 <div className='flex items-center gap-2'>
                     <span className='font-medium'>Account status: </span>
@@ -120,4 +132,4 @@ const Member = () => {
     )
 }
 
-export default Member
+export default withBase(Member)

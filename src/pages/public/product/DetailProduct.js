@@ -141,7 +141,6 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
         window.scrollTo(0, 0)
         titleRef.current.scrollIntoView({ block: 'center' })
     }, [pid])
-    console.log(currentProd)
     return (
         <div className={clsx('w-full')}>
             {!isQuickView && <div className='h-[81px] flex items-center justify-center bg-gray-100'>
