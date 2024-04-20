@@ -7,8 +7,12 @@ export const productSlice = createSlice({
         newProducts: null,
         errorMessage: '',
         isLoading: false,
+        dealDay: null,
     },
     reducers: {
+        getDealDaily: (state, action) => {
+            state.dealDay = action.payload
+        }
     },
 
     extraReducers: (builder) => {
@@ -26,6 +30,6 @@ export const productSlice = createSlice({
     }
 })
 
-export const { } = productSlice.actions
+export const { getDealDaily } = productSlice.actions
 
 export default productSlice.reducer

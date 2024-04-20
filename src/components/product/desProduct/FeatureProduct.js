@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { apiGetProducts } from 'apis'
 import banner1 from 'assets/banner1.webp'
 import banner4 from 'assets/banner4.webp'
-import ProductCard from '../common/ProductCard'
+import { ProductCard } from 'components'
 
 const FeatureProduct = () => {
     const [products, setProducts] = useState(null)
@@ -26,9 +26,11 @@ const FeatureProduct = () => {
                 {products?.map((el, idx) => (
                     <ProductCard
                         key={idx}
+                        pid={el?._id}
                         image={el?.thumb}
                         title={el?.title}
                         price={el?.price}
+                        category={el?.category}
                         totalRatings={el?.totalRatings}
                     />
                 ))}

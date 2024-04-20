@@ -4,41 +4,41 @@ import { apiGetProducts } from 'apis/product'
 import { formatMoney, formatPrice, renderStarFromNumber, secondsToHms } from 'utils/helper'
 import { CountDown } from '../..'
 import moment from 'moment'
+import { useSelector } from 'react-redux'
+import withBase from 'hocs/withBase'
+import { getDealDaily } from 'store/products/productSlice'
 
 const { AiFillStar, IoMenu } = icons
 let idInterval
-const DealDaily = () => {
-    const [dealDaily, setDealDaily] = useState(null)
+const DealDaily = ({ dispatch }) => {
     const [hours, setHours] = useState(0)
     const [minutes, setMinutes] = useState(0)
     const [seconds, setSeconds] = useState(0)
     const [expireTime, setExpire] = useState(false)
+    const { dealDay } = useSelector(state => state.product)
 
     const fetchDealDaily = async () => {
         const res = await apiGetProducts({
-            limit: 1,
-            page: Math.round(Math.random() * 10),
-            // totalRatings: 5
+            sort: "-totalRatings",
+            limit: 20
         })
         if (res.success) {
-            setDealDaily(res.products[0])
-            const today = `${moment().format('MM/DD/YYYY')} 7:00:00`
-            const second = new Date(today).getTime() - new Date().getTime() + 24 * 3600 * 1000
-            const number = secondsToHms(second)
-            setHours(number.h)
-            setMinutes(number.m)
-            setSeconds(number.s)
-        } else {
-            setHours(0)
-            setMinutes(59)
-            setSeconds(59)
+            const pr = res.products[Math.round(Math.random() * 20)]
+            dispatch(getDealDaily({ data: pr, time: Date.now() + 24 * 60 * 60 * 1000 }))
         }
     }
     useEffect(() => {
+        if (dealDay?.time) {
+            const deltaTime = dealDay.time - Date.now()
+            const number = secondsToHms(deltaTime)
+            setHours(number.h)
+            setMinutes(number.m)
+            setSeconds(number.s)
+        }
+    }, [dealDay])
+    useEffect(() => {
         idInterval && clearInterval(idInterval)
-        setTimeout(() => {
-            fetchDealDaily()
-        }, 5000)
+        if (moment(moment(dealDay?.time).format('MM/DD/YYYY')).isBefore(moment())) fetchDealDaily()
     }, [expireTime])
     useEffect(() => {
         idInterval = setInterval(() => {
@@ -71,15 +71,15 @@ const DealDaily = () => {
             </div>
             <div className='w-full flex flex-col items-center pt-8 px-4 gap-2'>
                 <img
-                    src={dealDaily?.thumb || 'https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png'}
+                    src={dealDay?.data?.thumb || 'https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png'}
                     alt="Images"
                     className='w-full object-contain'
                 />
-                <span className='line-clamp-1 text-center'>{dealDaily?.title}</span>
-                <span className='flex h-4'>{renderStarFromNumber(dealDaily?.totalRatings, 20)?.map((el, idx) => (
+                <span className='line-clamp-1 text-center'>{dealDay?.data?.title}</span>
+                <span className='flex h-4'>{renderStarFromNumber(dealDay?.data?.totalRatings, 20)?.map((el, idx) => (
                     <span key={idx}>{el}</span>
                 ))}</span>
-                <span>{`${formatMoney(formatPrice((dealDaily?.price)))} VNĐ`}</span>
+                <span>{`${formatMoney(formatPrice((dealDay?.data?.price)))} VNĐ`}</span>
             </div>
             <div className='px-4 mt-8'>
                 <div className='flex justify-center gap-2 items-center mb-4'>
@@ -99,4 +99,4 @@ const DealDaily = () => {
     )
 }
 
-export default memo(DealDaily)
+export default withBase(memo(DealDaily))

@@ -139,17 +139,17 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
             fetchProducts()
         }
         window.scrollTo(0, 0)
-        titleRef.current.scrollIntoView({ block: 'center' })
+        titleRef?.current?.scrollIntoView({ block: 'center' })
     }, [pid])
     return (
-        <div className={clsx('w-full')}>
+        <div ref={titleRef} className={clsx('w-full')}>
             {!isQuickView && <div className='h-[81px] flex items-center justify-center bg-gray-100'>
-                <div ref={titleRef} className='w-main'>
+                <div className='w-main'>
                     <h3 className='font-semibold'>{currentProd?.title || product?.title}</h3>
                     <BreadCrumbs title={currentProd?.title || product?.title} category={category} />
                 </div>
             </div>}
-            <div onClick={e => e.stopPropagation()} className={clsx(' bg-white m-auto mt-4 flex', isQuickView ? 'max-w-[900px] p-8 gap-16 max-h-[100vh] overflow-y-auto' : 'w-main')}>
+            <div onClick={e => e.stopPropagation()} className={clsx(' bg-white m-auto mt-4 flex', isQuickView ? 'max-w-[900px] p-8 justify-between max-h-[100vh] overflow-y-auto' : 'w-main')}>
                 <div className={clsx('flex-col flex gap-4 w-2/5', isQuickView && 'w-1/2')}>
                     <div className='h-[458px] w-[458px] flex items-center border object-cover overflow-hidden'>
                         <ReactImageMagnify {...{
@@ -192,7 +192,7 @@ const DetailProduct = ({ isQuickView, data, navigate, dispatch, location }) => {
                         </Slider>
                     </div>
                 </div>
-                <div className={clsx('w-2/5 pr-6 flex flex-col gap-4', isQuickView && 'w-1/2')}>
+                <div className={clsx('w-2/5 flex flex-col gap-4', isQuickView && 'w-1/2')}>
                     <div className='flex items-center justify-between'>
                         <h2 className='text-[30px] font-semibold'>{`${formatMoney(formatPrice(currentProd?.price || product?.price))} VND`}</h2>
                         <span className='text-sm text-main'>{`In stock: ${product?.quantity}`}</span>

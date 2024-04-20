@@ -2,10 +2,13 @@ import React, { memo } from 'react'
 import { Banner, Sidebar, BestSeller, DealDaily, FeatureProduct, CustomSlider } from 'components'
 import { useSelector } from 'react-redux';
 import icons from 'utils/icons';
+import withBase from 'hocs/withBase';
+import path from 'utils/path';
+import { createSearchParams } from 'react-router-dom';
 
 const { IoIosArrowForward } = icons
 
-const Home = () => {
+const Home = ({ navigate }) => {
     const { newProducts } = useSelector(state => state.product)
     const { categories } = useSelector(state => state.app)
     return (
@@ -55,7 +58,13 @@ const Home = () => {
                                         {el?.brand?.map((item, idx) => (
                                             <span
                                                 key={idx}
-                                                className='flex gap-1 items-center text-gray-500'
+                                                className='flex cursor-pointer hover:underline gap-1 items-center text-gray-500'
+                                                onClick={() => navigate({
+                                                    pathname: `/${el.title}`,
+                                                    search: createSearchParams({
+                                                        brand: item,
+                                                    }).toString()
+                                                })}
                                             >
                                                 <IoIosArrowForward />
                                                 <li
@@ -76,4 +85,4 @@ const Home = () => {
     )
 }
 
-export default memo(Home)
+export default withBase(memo(Home))

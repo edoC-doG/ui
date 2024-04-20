@@ -1,9 +1,14 @@
-import React from 'react'
+import withBase from 'hocs/withBase'
+import React, { memo } from 'react'
 import { formatMoney, formatPrice, renderStarFromNumber, } from 'utils/helper'
 
-const ProductCard = ({ price, totalRatings, title, image }) => {
+const ProductCard = ({ price, totalRatings, title, image, pid, navigate, category }) => {
+
     return (
-        <div className='w-1/3 flex-auto flex px-[10px] mb-[20px]'>
+        <div
+            className='w-1/3 flex-auto cursor-pointer flex px-[10px] mb-[20px]'
+            onClick={(e) => navigate(`/${category?.toLowerCase()}/${pid}/${title}`)}
+        >
             <div className='w-full flex border'>
                 <img
                     src={image}
@@ -22,4 +27,4 @@ const ProductCard = ({ price, totalRatings, title, image }) => {
     )
 }
 
-export default ProductCard
+export default withBase(memo(ProductCard))

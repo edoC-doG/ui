@@ -109,7 +109,7 @@ const ProductPage = () => {
                     {products?.products?.map((el, idx) => (
                         <ProductItem
                             key={idx}
-                            pid={el.id}
+                            pid={el._id}
                             productData={el}
                             normal={true}
                         />

@@ -1,7 +1,7 @@
 import React, { memo, useState, useCallback } from 'react'
 import { tabsProd } from 'utils/constFiel'
 import { Button, Comment, RatingBar, VoteOption } from '../..'
-import { renderStarFromNumber, validate } from 'utils/helper'
+import { renderStarFromNumber } from 'utils/helper'
 import { apiRatings } from 'apis'
 import { showModal } from 'store/app/appSlice'
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,6 +18,7 @@ const ProdDesInf = ({ ratings, total, nameProduct, pid, reRender }) => {
     const navigate = useNavigate()
 
     const handleSubmitVoteOption = useCallback(async ({ comment, score }) => {
+        console.log({ pid, comment, score })
         if (!score || !pid || !comment) {
             toast.warning('Please check your forms!!!')
             return
@@ -104,7 +105,7 @@ const ProdDesInf = ({ ratings, total, nameProduct, pid, reRender }) => {
                             total={el.star}
                             updateAt={el.updateAt}
                             comment={el.comment}
-                            name={`${el.postedBy?.lastName} ${el.postedBy?.firstName}`}
+                            nameUser={`${el.postedBy?.lastName} ${el.postedBy?.firstName}`}
                         />
                     ))}
                 </div>
